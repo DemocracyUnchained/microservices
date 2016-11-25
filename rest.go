@@ -240,7 +240,7 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
 
     for voter_rows.Next() {
       voter := Voter{}
-      err := rows.Scan(&voter.StateId,&voter.Source,&voter.ElectionId,&voter.BallotsCounted,&voter.VotingEligiblePopulation,&voter.VotingAgePopulation,&voter.IneligiblePrison,&voter.IneligibleProbation,&voter.IneligibleParole)
+      err := voter_rows.Scan(&voter.StateId,&voter.Source,&voter.ElectionId,&voter.BallotsCounted,&voter.VotingEligiblePopulation,&voter.VotingAgePopulation,&voter.IneligiblePrison,&voter.IneligibleProbation,&voter.IneligibleParole)
       checkErr(err)
       state_report.Voter = voter
     }
