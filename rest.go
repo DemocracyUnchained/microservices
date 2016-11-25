@@ -13,16 +13,16 @@
 package main 
 
 import (
-    "database/sql"
-    _ "github.com/go-sql-driver/mysql"
-      "net/http"
-      "encoding/json"
-      "fmt"
-//      "html"
-      "log"
-      "github.com/gorilla/mux"
-//      "time"
-	"strconv"
+  "database/sql"
+  _ "github.com/go-sql-driver/mysql"
+  "net/http"
+  "encoding/json"
+  "fmt"
+  //      "html"
+  "log"
+  "github.com/gorilla/mux"
+  //      "time"
+  "strconv"
 )
 
 type ZipCode struct {
@@ -44,26 +44,39 @@ type State struct {
 type States []State
 
 type Population struct {
-     People	int		`json:"people"`
-     Year	int		`json:"year"`
-     Type	string		`json:"type"`
+  People  int       `json:"people"`
+  Year    int       `json:"year"`
+  Type    string    `json:"type"`
 }
 
 type Populations []Population
 
 type ElectoralVote struct {
-     Votes	   int		`json:"votes"`
-     CensusYear	   int		`json:"census_year"`
+  Votes       int   `json:"votes"`
+  CensusYear  int   `json:"census_year"`
 }
 
 type ElectoralVotes []ElectoralVote
 
+type Voter struct {
+  Source                    `json:"source"`
+  ElectionId                `json:"election_id"`
+  BallotsCounted            `json:"ballots_counted"`
+  VotingEligiblePopulation  `json:"voting_eligible_population"`
+  VotingAgePopulation       `json:"voting_age_population"`
+  IneligiblePrison          `json:"ineligible_prison"`
+  IneligibleProbation       `json:"ineligible_probation"`
+  IneligibleParole          `json:"ineligible_parole"`
+}
+
+type Voters []Voter
+
 type StateReport struct {
-     State	 	`json:"state"`
-     ElectoralVotes	`json:"electoral_votes"`
-     Population		`json:"population_recent"`
-     Populations	`json:"populations"`
-     
+  State	 	        `json:"state"`
+  ElectoralVotes	`json:"electoral_votes"`
+  Population		  `json:"population_recent"`
+  Populations	    `json:"populations"`     
+  Voters          `json:"voters"`
 }
 
 type StateReports []StateReport
@@ -100,6 +113,10 @@ func main() {
   router.HandleFunc("/states", StatesIndex)
   router.HandleFunc("/states/{stateName}", StatesShow)
 
+  // /voters
+  router.HandleFunc("/voters", VotersIndex)
+  router.HandleFunc("/voters/{stateId}", VotersShow)
+
   // /zipcodes
   router.HandleFunc("/zipcodes", ZipCodeIndex)
   router.HandleFunc("/zipcodes/{zipCode}", ZipCodeShow)
@@ -135,6 +152,32 @@ func ZipCodeShow(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func VotersIndex(w http.ResponseWriter, r *http.Request) {
+     fmt.Fprintln(w, "TODO")
+}
+
+func VotersShow(w http.ResponseWriter, r *http.Request) {
+
+  vars := mux.Vars(r)
+  zipCode := vars["stateId"]
+
+  rows, err := db.Query("SELECT state_id,source,election_id,ballots_counted,voting_eligible_population,voting_age_population,ineligible_prison,ineligible_probation,ineligible_parole FROM voters WHERE state_id=?", stateId)
+
+  checkErr(err);
+
+  voters := Voters{}
+
+  for rows.Next() {
+    voter := Voter{}
+    err := rows.Scan(&voter.StateId,&voter.Source,&voter.ElectionId,&voter.BallotsCounted,&voter.VotingEligiblePopulation,&voter.VotingAgePopulation,&voter.IneligiblePrison,&voter.IneligibleProbation,&voter.IneligibleParole)
+    checkErr(err)
+    voters.append(voters,voter)
+  }
+
+  json.NewEncoder(w).Encode(voters)
+
+}
+
 func StatesIndex(w http.ResponseWriter, r *http.Request) {
 
      rows, err := db.Query("SELECT id,name,joined,is_state FROM states order by id asc")
@@ -143,7 +186,7 @@ func StatesIndex(w http.ResponseWriter, r *http.Request) {
       states := States{}
 
       for rows.Next() {
-              state := State{}
+        state := State{}
 	      err := rows.Scan(&state.Id, &state.Name, &state.Joined, &state.Is_state)
 	      checkErr(err)
 	      states = append(states, state)
