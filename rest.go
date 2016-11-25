@@ -77,7 +77,7 @@ type StateReport struct {
   ElectoralVotes	`json:"electoral_votes"`
   Population		  `json:"population_recent"`
   Populations	    `json:"populations"`     
-  Voters          `json:"voters"`
+  Voter           `json:"voters"`
 }
 
 type StateReports []StateReport
@@ -214,50 +214,67 @@ func StateQuery(stateName string) string {
 }
 
 func StatesShow(w http.ResponseWriter, r *http.Request) {
-     vars := mux.Vars(r)
-     stateName := vars["stateName"]
 
-    rows, err := db.Query(StateQuery(stateName), stateName)
+  vars := mux.Vars(r)
+  stateName := vars["stateName"]
 
-    checkErr(err);
+  rows, err := db.Query(StateQuery(stateName), stateName)
 
-    // TODO: handle error (missing state)
+  checkErr(err);
 
-      state_reports := StateReports{}
+  // TODO: handle error (missing state)
 
-      for rows.Next() {
+  state_reports := StateReports{}
 
-      	state_report := StateReport{}
-	err := rows.Scan(&state_report.State.Id, &state_report.State.Name, &state_report.State.Joined, &state_report.State.Is_state)
-	checkErr(err)
+  for rows.Next() {
 
-	population_rows, err := db.Query("SELECT people,year,type FROM populations where state_id=? order by year,type asc",state_report.State.Id)
-	checkErr(err)
+    state_report := StateReport{}
+    err := rows.Scan(&state_report.State.Id, &state_report.State.Name, &state_report.State.Joined, &state_report.State.Is_state)
+    checkErr(err)
 
-	for population_rows.Next() {
-		population := Population{}
-		err := population_rows.Scan(&population.People,&population.Year,&population.Type)
-		checkErr(err)
-		state_report.Populations = append(state_report.Populations,population)
+    // Show the most recent election for this state
+    // TODO:  really choose the correct one [right now the 2016 presidential election is hardcoded]
 
-		state_report.Population = population
-	}	
+    voter_rows, err = db.Query("SELECT state_id,source,election_id,ballots_counted,voting_eligible_population,voting_age_population,ineligible_prison,ineligible_probation,ineligible_parole FROM voters WHERE state_id=? AND election_id=1", state_report.State.StateId)
+    checkErr(err)
 
-	electoral_rows, err := db.Query("SELECT votes,census_year FROM electoral_votes where state_id=? order by census_year desc",state_report.State.Id)
-	checkErr(err)
+    for voter_rows.Next() {
+      voter := Voter{}
+      err := rows.Scan(&voter.StateId,&voter.Source,&voter.ElectionId,&voter.BallotsCounted,&voter.VotingEligiblePopulation,&voter.VotingAgePopulation,&voter.IneligiblePrison,&voter.IneligibleProbation,&voter.IneligibleParole)
+      checkErr(err)
+      state_report.Voter = voter
+    }
 
-	for electoral_rows.Next() {
-	    electoral_vote := ElectoralVote{}
-	    err := electoral_rows.Scan(&electoral_vote.Votes,&electoral_vote.CensusYear)
-	    checkErr(err)
-	    state_report.ElectoralVotes = append(state_report.ElectoralVotes,electoral_vote)
-	}
+    population_rows, err := db.Query("SELECT people,year,type FROM populations where state_id=? order by year,type asc",state_report.State.Id)
+    checkErr(err)
 
-	state_reports = append(state_reports, state_report)      	  
+    // Show population history for this state
 
-      }
+    for population_rows.Next() {
+		  population := Population{}
+		  err := population_rows.Scan(&population.People,&population.Year,&population.Type)
+		  checkErr(err)
+		  state_report.Populations = append(state_report.Populations,population)
+  		state_report.Population = population
+    }	
 
-    json.NewEncoder(w).Encode(state_reports)
+    // Show the most recent electoral history for this state
+
+    electoral_rows, err := db.Query("SELECT votes,census_year FROM electoral_votes where state_id=? order by census_year desc",state_report.State.Id)
+    checkErr(err)
+
+    for electoral_rows.Next() {
+	   electoral_vote := ElectoralVote{}
+	   err := electoral_rows.Scan(&electoral_vote.Votes,&electoral_vote.CensusYear)
+	   checkErr(err)
+	   state_report.ElectoralVotes = append(state_report.ElectoralVotes,electoral_vote)
+    }
+
+    state_reports = append(state_reports, state_report)      	  
+
+  }
+
+  json.NewEncoder(w).Encode(state_reports)
 
 }
 
