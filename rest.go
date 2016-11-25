@@ -235,7 +235,7 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
     // Show the most recent election for this state
     // TODO:  really choose the correct one [right now the 2016 presidential election is hardcoded]
 
-    voter_rows, err = db.Query("SELECT state_id,source,election_id,ballots_counted,voting_eligible_population,voting_age_population,ineligible_prison,ineligible_probation,ineligible_parole FROM voters WHERE state_id=? AND election_id=1", state_report.State.Id)
+    voter_rows, err := db.Query("SELECT state_id,source,election_id,ballots_counted,voting_eligible_population,voting_age_population,ineligible_prison,ineligible_probation,ineligible_parole FROM voters WHERE state_id=? AND election_id=1", state_report.State.Id)
     checkErr(err)
 
     for voter_rows.Next() {
