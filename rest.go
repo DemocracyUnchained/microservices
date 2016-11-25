@@ -285,6 +285,8 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
       checkErr(err)
     }
 
+    state_report.vsVotes = 667
+
     // Append the state report to the array
     state_reports = append(state_reports, state_report)      	  
 
