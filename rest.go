@@ -121,7 +121,7 @@ func ZipCodeShow(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   zipCode := vars["zipCode"]
 
-  rows, err := db.Query("SELECT zip,city,country from zip_codes WHERE zip=?", zipCode)
+  rows, err := db.Query("SELECT zip,city,county from zip_codes WHERE zip=?", zipCode)
 
   checkErr(err);
 
