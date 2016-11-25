@@ -172,7 +172,7 @@ func VotersShow(w http.ResponseWriter, r *http.Request) {
     voter := Voter{}
     err := rows.Scan(&voter.StateId,&voter.Source,&voter.ElectionId,&voter.BallotsCounted,&voter.VotingEligiblePopulation,&voter.VotingAgePopulation,&voter.IneligiblePrison,&voter.IneligibleProbation,&voter.IneligibleParole)
     checkErr(err)
-    voters.append(voters,voter)
+    voters = append(voters,voter)
   }
 
   json.NewEncoder(w).Encode(voters)
