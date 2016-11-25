@@ -96,11 +96,11 @@ func main() {
 
   router.HandleFunc("/", Index)
 
-  # /states
+  // /states
   router.HandleFunc("/states", StatesIndex)
   router.HandleFunc("/states/{stateName}", StatesShow)
 
-  # /zipcodes
+  // /zipcodes
   router.HandleFunc("/zipcodes", ZipCodeIndex)
   router.HandleFunc("/zipcodes/{zipCode}", ZipCodeShow)
 
