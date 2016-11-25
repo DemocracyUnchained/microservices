@@ -59,14 +59,15 @@ type ElectoralVote struct {
 type ElectoralVotes []ElectoralVote
 
 type Voter struct {
-  Source                    `json:"source"`
-  ElectionId                `json:"election_id"`
-  BallotsCounted            `json:"ballots_counted"`
-  VotingEligiblePopulation  `json:"voting_eligible_population"`
-  VotingAgePopulation       `json:"voting_age_population"`
-  IneligiblePrison          `json:"ineligible_prison"`
-  IneligibleProbation       `json:"ineligible_probation"`
-  IneligibleParole          `json:"ineligible_parole"`
+  StateId                   int     `json:"state_id"`
+  Source                    string  `json:"source"`
+  ElectionId                int     `json:"election_id"`
+  BallotsCounted            int     `json:"ballots_counted"`
+  VotingEligiblePopulation  int     `json:"voting_eligible_population"`
+  VotingAgePopulation       int     `json:"voting_age_population"`
+  IneligiblePrison          int     `json:"ineligible_prison"`
+  IneligibleProbation       int     `json:"ineligible_probation"`
+  IneligibleParole          int     `json:"ineligible_parole"`
 }
 
 type Voters []Voter
