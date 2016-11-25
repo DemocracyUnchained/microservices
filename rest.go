@@ -278,7 +278,10 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
 
     powerful_rows, err := db.Query("SELECT name,votes,voting_eligible_population,ballots_counted FROM electoral_votes,states,voters where electoral_votes.state_id=states.id AND voters.state_id=states.id AND states.name='Wyoming' AND electoral_votes.census_year=2010")
     checkErr(err)
-    powerful_rows.Scan(&state_report.vsName,&state_report.vsVotes,&state_report.vsVotingEligiblePopulation,&state_report.vsBallotsCounted)
+    for powerful_rows.Next() {
+      err := powerful_rows.Scan(&state_report.vsName,&state_report.vsVotes,&state_report.vsVotingEligiblePopulation,&state_report.vsBallotsCounted)
+      checkErr(err)
+    }
 
     // Append the state report to the array
     state_reports = append(state_reports, state_report)      	  
