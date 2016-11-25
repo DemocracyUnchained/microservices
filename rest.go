@@ -79,9 +79,9 @@ type StateReport struct {
   Populations	                      `json:"populations"`     
   Voter                             `json:"voters"`
   vsName  string                    `json:"vs_name"`
-  vsVotes string                    `json:"vs_votes"`
-  vsVotingEligiblePopulation string `json:"vs_voting_eligible_population"`
-  vsBallotsCounted string           `json:"vs_ballots_counted"`
+  vsVotes int                       `json:"vs_votes"`
+  vsVotingEligiblePopulation int    `json:"vs_voting_eligible_population"`
+  vsBallotsCounted int              `json:"vs_ballots_counted"`
 }
 
 type StateReports []StateReport
