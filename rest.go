@@ -286,7 +286,7 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
     for powerful_rows.Next() {
       err := powerful_rows.Scan(&state_report.Vs.Name,&state_report.Vs.Votes,&state_report.Vs.VotingEligiblePopulation,&state_report.Vs.BallotsCounted)
       checkErr(err)
-      state_report.Vs.PercentAsPowerful = (float32(state_report.Vs.VotingEligiblePopulation)/float32(state_report.Vs.Votes) / (float32(state_report.Voter.VotingEligiblePopulation) / float32(state_report.ElectoralVotes.Votes))
+      state_report.Vs.PercentAsPowerful = (float32(state_report.Vs.VotingEligiblePopulation)/float32(state_report.Vs.Votes)) / (float32(state_report.Voter.VotingEligiblePopulation) / float32(state_report.ElectoralVotes.Votes))
     }
 
     // Append the state report to the array
