@@ -276,6 +276,8 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
 
     // Compare to the most powerful state (Wyoming)
 
+    state_report.vsVotes = 666
+
     powerful_rows, err := db.Query("SELECT name,votes,voting_eligible_population,ballots_counted FROM electoral_votes,states,voters where electoral_votes.state_id=states.id AND voters.state_id=states.id AND states.name='Wyoming' AND electoral_votes.census_year=2010")
     checkErr(err)
     for powerful_rows.Next() {
