@@ -72,16 +72,20 @@ type Voter struct {
 
 type Voters []Voter
 
+type Vs struct {
+  Name  string                    `json:"name"`
+  Votes int                       `json:"votes"`
+  VotingEligiblePopulation int    `json:"voting_eligible_population"`
+  BallotsCounted int              `json:"ballots_counted"`  
+}
+
 type StateReport struct {
   State	 	                          `json:"state"`
   ElectoralVotes	                  `json:"electoral_votes"`
   Population		                    `json:"population_recent"`
   Populations	                      `json:"populations"`     
   Voter                             `json:"voters"`
-  vsName  string                    `json:"vs_name"`
-  vsVotes int                       `json:"vs_votes"`
-  vsVotingEligiblePopulation int    `json:"vs_voting_eligible_population"`
-  vsBallotsCounted int              `json:"vs_ballots_counted"`
+  Vs                                `json:"vs"`
 }
 
 type StateReports []StateReport
@@ -276,26 +280,22 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
 
     // Compare to the most powerful state (Wyoming)
 
-    state_report.vsVotes = 666
-
     powerful_rows, err := db.Query("SELECT name,votes,voting_eligible_population,ballots_counted FROM electoral_votes,states,voters where electoral_votes.state_id=states.id AND voters.state_id=states.id AND states.name='Wyoming' AND electoral_votes.census_year=2010")
     checkErr(err)
     for powerful_rows.Next() {
-      err := powerful_rows.Scan(&state_report.vsName,&state_report.vsVotes,&state_report.vsVotingEligiblePopulation,&state_report.vsBallotsCounted)
+      err := powerful_rows.Scan(&state_report.Vs.Name,&state_report.Vs.Votes,&state_report.Vs.VotingEligiblePopulation,&state_report.Vs.BallotsCounted)
       checkErr(err)
     }
 
-    state_report.vsVotes = 667
-
-    fmt.Println(state_report.vsName)
-    fmt.Println(state_report.vsVotingEligiblePopulation)
+    fmt.Println(state_report.Vs.Name)
+    fmt.Println(state_report.Vs.VotingEligiblePopulation)
 
     // Append the state report to the array
     state_reports = append(state_reports, state_report)      	  
 
   }
 
-  fmt.Println(state_reports[0].vsBallotsCounted)
+  fmt.Println(state_reports[0].Vs.BallotsCounted)
 
   json.NewEncoder(w).Encode(state_reports)
 
