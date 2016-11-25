@@ -295,6 +295,8 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
 
   }
 
+  fmt.Println(state_reports[0].vsBallotsCounted)
+
   json.NewEncoder(w).Encode(state_reports)
 
 }
