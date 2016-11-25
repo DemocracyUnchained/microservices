@@ -73,11 +73,15 @@ type Voter struct {
 type Voters []Voter
 
 type StateReport struct {
-  State	 	        `json:"state"`
-  ElectoralVotes	`json:"electoral_votes"`
-  Population		  `json:"population_recent"`
-  Populations	    `json:"populations"`     
-  Voter           `json:"voters"`
+  State	 	                          `json:"state"`
+  ElectoralVotes	                  `json:"electoral_votes"`
+  Population		                    `json:"population_recent"`
+  Populations	                      `json:"populations"`     
+  Voter                             `json:"voters"`
+  vsName  string                    `json:"vs_name"`
+  vsVotes string                    `json:"vs_votes"`
+  vsVotingEligiblePopulation string `json:"vs_voting_eligible_population"`
+  vsBallotsCounted string           `json:"vs_ballots_counted"`
 }
 
 type StateReports []StateReport
@@ -270,6 +274,14 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
 	   state_report.ElectoralVotes = append(state_report.ElectoralVotes,electoral_vote)
     }
 
+    // Compare to the most powerful state (Wyoming)
+
+    electoral_rows, err := db.Query("SELECT name,votes,voting_eligible_population,ballots_counted FROM electoral_votes,states,voters where electoral_votes.state_id=states.id AND voters.state_id=states.id AND states.name='Wyoming' AND electoral_votes.census_year=2010")
+    checkErr(err)
+    err := electoral_rows.Scan(&state_report.vsName,&state_report.vsVotes,&state_report.vsVotingEligiblePopulation,&state_report.vsBallotsCounted)
+    checkErr(err)
+
+    // Append the state report to the array
     state_reports = append(state_reports, state_report)      	  
 
   }
