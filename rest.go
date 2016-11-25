@@ -76,7 +76,8 @@ type Vs struct {
   Name  string                    `json:"name"`
   Votes int                       `json:"votes"`
   VotingEligiblePopulation int    `json:"voting_eligible_population"`
-  BallotsCounted int              `json:"ballots_counted"`  
+  BallotsCounted int              `json:"ballots_counted"`
+  PercentAsPowerful float32       `json:"percent_as_powerful"`
 }
 
 type StateReport struct {
@@ -285,17 +286,13 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
     for powerful_rows.Next() {
       err := powerful_rows.Scan(&state_report.Vs.Name,&state_report.Vs.Votes,&state_report.Vs.VotingEligiblePopulation,&state_report.Vs.BallotsCounted)
       checkErr(err)
+      state_report.Vs.PercentAsPowerful = (float32(state_report.Vs.VotingEligiblePopulation)/float32(state_report.Vs.Votes) / (float32(state_report.Voter.VotingEligiblePopulation) / float32(state_report.ElectoralVotes.Votes))
     }
-
-    fmt.Println(state_report.Vs.Name)
-    fmt.Println(state_report.Vs.VotingEligiblePopulation)
 
     // Append the state report to the array
     state_reports = append(state_reports, state_report)      	  
 
   }
-
-  fmt.Println(state_reports[0].Vs.BallotsCounted)
 
   json.NewEncoder(w).Encode(state_reports)
 
