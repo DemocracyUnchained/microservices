@@ -160,7 +160,7 @@ func VotersIndex(w http.ResponseWriter, r *http.Request) {
 func VotersShow(w http.ResponseWriter, r *http.Request) {
 
   vars := mux.Vars(r)
-  zipCode := vars["stateId"]
+  stateId := vars["stateId"]
 
   rows, err := db.Query("SELECT state_id,source,election_id,ballots_counted,voting_eligible_population,voting_age_population,ineligible_prison,ineligible_probation,ineligible_parole FROM voters WHERE state_id=?", stateId)
 
