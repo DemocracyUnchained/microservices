@@ -2,7 +2,7 @@
 /************************************************************************************************
  * Copyright 2016 Democracy Unchained -- http://DemocracyUnchained.org
  *
- * Licensed under the GNU General Public License. See LICENSE.txt for details.
+ * Licensed under the GNU Affero General Public License. See LICENSE.txt for details.
  *
  * Note: other non-source-code works from Democracy Unchained are typically licensed differently
  * (typically Creative Commons with Attribution).  Please refer to the relevant licensing details
@@ -25,12 +25,20 @@ import (
 	"strconv"
 )
 
+type ZipCode struct {
+  Zip     string  `json:"zip"`
+  County  string  `json:"county"`
+  City    string  `json:"city"`
+}
+
+type ZipCodes []ZipCode
+
 type State struct {
-     Id		int		`json:"id"`
-     Name  	string		`json:"name"`
-//     Joined     time.Time	`json:"joined"`
-     Joined	string		`json:"joined"`
-     Is_state	bool		`json:"is_state"`
+  Id		int		`json:"id"`
+  Name  	string		`json:"name"`
+  //     Joined     time.Time	`json:"joined"`
+  Joined	string		`json:"joined"`
+  Is_state	bool		`json:"is_state"`
 }
 
 type States []State
@@ -81,21 +89,51 @@ func InitDB() {
 }
 
 func main() {
-    
-    InitDB()
 
-      router := mux.NewRouter().StrictSlash(true)
-      router.HandleFunc("/", Index)
-      router.HandleFunc("/states", StatesIndex)
-      router.HandleFunc("/states/{stateName}", StatesShow)
+  InitDB()
 
-      log.Fatal(http.ListenAndServe(":8080", router))
+  router := mux.NewRouter().StrictSlash(true)
+
+  router.HandleFunc("/", Index)
+
+  # /states
+  router.HandleFunc("/states", StatesIndex)
+  router.HandleFunc("/states/{stateName}", StatesShow)
+
+  # /zipcodes
+  router.HandleFunc("/zipcodes", ZipCodeIndex)
+  router.HandleFunc("/zipcodes/{zipCode}", ZipCodeShow)
+
+  log.Fatal(http.ListenAndServe(":8080", router))
 
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
      fmt.Fprintln(w, "Welcome!")
      }
+
+func ZipCodeIndex(w http.ResponseWriter, r *http.Request) {
+     fmt.Fprintln(w, "TODO")
+}
+
+func ZipCodeShow(w http.ResponseWriter, r *http.Request) {
+
+  vars := mux.Vars(r)
+  zipCode := vars["zipCode"]
+
+  rows, err := db.Query("SELECT zip,city,country from zip_codes WHERE zip=?", zipCode)
+
+  checkErr(err);
+
+  zip_code := ZipCode{}
+  for rows.Next() {
+    err := rows.Scan(&zip_code.Zip,&zip_code.City,&zip_code.County)
+    checkErr(err)
+  }
+
+  json.NewEncoder(w).Encode(zip_code)
+
+}
 
 func StatesIndex(w http.ResponseWriter, r *http.Request) {
 
