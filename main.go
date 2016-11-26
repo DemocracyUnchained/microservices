@@ -154,7 +154,7 @@ func main() {
   router.HandleFunc("/zipcodes", ZipCodeIndex)
   router.HandleFunc("/zipcodes/{zipCode}", ZipCodeShow)
 
-  http.Handle("/", &MyServer{r})
+  http.Handle("/", &MyServer{router})
 
   log.Fatal(http.ListenAndServe(":" + strconv.Itoa(Config.Server.Port), router))
 
