@@ -23,24 +23,7 @@ import (
   "github.com/gorilla/mux"
   //      "time"
   "strconv"
-  "./config"
 )
-
-// Code to implement the TextUnmarshaler interface for `duration`:
-//
-// type duration struct {
-//  time.Duration
-// }
-//
-// func (d *duration) UnmarshalText(text []byte) error {
-//  var err error
-//  d.Duration, err = time.ParseDuration(string(text))
-//  return err
-// }
-
-for _, s := range favorites.Song {
-    fmt.Printf("%s (%s)\n", s.Name, s.Duration)
-}
 
 type ZipCode struct {
   Zip     string  `json:"zip"`
@@ -117,7 +100,7 @@ var err error
 func InitDB() {
 
     // Create an sql.DB and check for errors
-    db, err = sql.Open("mysql", "readonly:cnc93y3ghniwy9384nfihsd93f938nds@/democracy")
+    db, err = sql.Open("mysql", Config.DB.Username+":"+Config.DB.Password+"@/"+Config.DB.Database)
     if err != nil {
        panic(err.Error())
        }			
@@ -131,6 +114,8 @@ func InitDB() {
 }
 
 func main() {
+
+  loadConfig()
 
   InitDB()
 
@@ -150,7 +135,7 @@ func main() {
   router.HandleFunc("/zipcodes", ZipCodeIndex)
   router.HandleFunc("/zipcodes/{zipCode}", ZipCodeShow)
 
-  log.Fatal(http.ListenAndServe(":8080", router))
+  log.Fatal(http.ListenAndServe(":" + string(Config.Server.Port), router))
 
 }
 

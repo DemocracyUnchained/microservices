@@ -1,4 +1,4 @@
-package config
+package main
 
 import (
     "fmt"
@@ -21,20 +21,18 @@ type server struct {
     Port    int
 }
 
-func main() {
+var Config tomlConfig
+
+func loadConfig() {
 
     var configPtr = flag.String("config","config.toml","path to configuration file")
 
     flag.Parse()
 
-    var config tomlConfig
-    if _, err := toml.DecodeFile(*configPtr, &config); err != nil {
+    if _, err := toml.DecodeFile(*configPtr, &Config); err != nil {
         fmt.Println(err)
         return
     }
-
-    fmt.Printf("Database: %s %s %s\n",config.DB.Username,config.DB.Password,config.DB.Database)
-    fmt.Printf("Port: %d\n",config.Server.Port)
 
 }
 
