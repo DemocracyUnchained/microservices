@@ -118,6 +118,7 @@ type MyServer struct {
 }
 
 func (s *MyServer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+rw.Header().Set("My-Test-Header", "Hello")
     if origin := req.Header.Get("Origin"); origin != "" {
         rw.Header().Set("Access-Control-Allow-Origin", origin)
         rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
