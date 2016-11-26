@@ -68,6 +68,7 @@ type Voter struct {
   IneligiblePrison          int     `json:"ineligible_prison"`
   IneligibleProbation       int     `json:"ineligible_probation"`
   IneligibleParole          int     `json:"ineligible_parole"`
+  Turnout                   float32 `json:"turnout"`
 }
 
 type Voters []Voter
@@ -181,6 +182,7 @@ func VotersShow(w http.ResponseWriter, r *http.Request) {
     voter := Voter{}
     err := rows.Scan(&voter.StateId,&voter.Source,&voter.ElectionId,&voter.BallotsCounted,&voter.VotingEligiblePopulation,&voter.VotingAgePopulation,&voter.IneligiblePrison,&voter.IneligibleProbation,&voter.IneligibleParole)
     checkErr(err)
+    voter.Turnout = float32(voter.VotingEligiblePopulation) / float32(voter.BallotsCounted)
     voters = append(voters,voter)
   }
 
