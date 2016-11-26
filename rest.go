@@ -25,6 +25,22 @@ import (
   "strconv"
 )
 
+// Code to implement the TextUnmarshaler interface for `duration`:
+//
+// type duration struct {
+//  time.Duration
+// }
+//
+// func (d *duration) UnmarshalText(text []byte) error {
+//  var err error
+//  d.Duration, err = time.ParseDuration(string(text))
+//  return err
+// }
+
+for _, s := range favorites.Song {
+    fmt.Printf("%s (%s)\n", s.Name, s.Duration)
+}
+
 type ZipCode struct {
   Zip     string  `json:"zip"`
   County  string  `json:"county"`
