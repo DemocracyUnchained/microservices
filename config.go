@@ -1,47 +1,40 @@
-import   "github.com/BurntSushi/toml"
+package config
 
-var tomlBlob = `
-# Some comments.
-[alpha]
-ip = "10.0.0.1"
+import (
+    "fmt"
+    "flag"
+    "github.com/BurntSushi/toml"
+)
 
-	[alpha.config]
-	Ports = [ 8001, 8002 ]
-	Location = "Toronto"
-	Created = 1987-07-05T05:45:00Z
+type tomlConfig struct {
+    DB      database `toml:"database"`
+    Server  server   `toml:"server"`
+}
 
-[beta]
-ip = "10.0.0.2"
-
-	[beta.config]
-	Ports = [ 9001, 9002 ]
-	Location = "New Jersey"
-	Created = 1887-01-05T05:55:00Z
-`
-
-type serverConfig struct {
-    Ports    []int
-    Location string
-    Created  time.Time
+type database struct {
+    Username string
+    Password string
+    Database string
 }
 
 type server struct {
-    IP     string       `toml:"ip,omitempty"`
-    Config serverConfig `toml:"config"`
+    Port    int
 }
 
-type servers map[string]server
+func main() {
 
-var config servers
-if _, err := Decode(tomlBlob, &config); err != nil {
-    log.Fatal(err)
-}
+    var configPtr = flag.String("config","config.toml","path to configuration file")
 
-for _, name := range []string{"alpha", "beta"} {
-    s := config[name]
-    fmt.Printf("Server: %s (ip: %s) in %s created on %s\n",
-        name, s.IP, s.Config.Location,
-        s.Config.Created.Format("2006-01-02"))
-    fmt.Printf("Ports: %v\n", s.Config.Ports)
+    flag.Parse()
+
+    var config tomlConfig
+    if _, err := toml.DecodeFile(*configPtr, &config); err != nil {
+        fmt.Println(err)
+        return
+    }
+
+    fmt.Printf("Database: %s %s %s\n",config.DB.Username,config.DB.Password,config.DB.Database)
+    fmt.Printf("Port: %d\n",config.Server.Port)
+
 }
 

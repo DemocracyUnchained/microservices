@@ -1,0 +1,7 @@
+[database]
+username = "readonly"
+password = "cnc93y3ghniwy9384nfihsd93f938nds"
+database = "democracy"
+
+[server]
+port = 80
