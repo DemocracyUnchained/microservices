@@ -156,7 +156,7 @@ func main() {
 
   http.Handle("/", &MyServer{router})
 
-  log.Fatal(http.ListenAndServe(":" + strconv.Itoa(Config.Server.Port), router))
+  log.Fatal(http.ListenAndServe(":" + strconv.Itoa(Config.Server.Port), nil))
 
 }
 
