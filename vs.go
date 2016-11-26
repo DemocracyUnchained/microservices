@@ -10,12 +10,11 @@
 
 package main 
 
-func main() {
-
-  loadConfig()
-
-  InitDB()
-
-  InitHTTP()
-
+type Vs struct {
+  Name  string                    `json:"name"`
+  Votes int                       `json:"votes"`
+  VotingEligiblePopulation int    `json:"voting_eligible_population"`
+  BallotsCounted int              `json:"ballots_counted"`
+  PercentAsPowerful float32       `json:"percent_as_powerful"`
+  Turnout                   float32 `json:"turnout"`
 }

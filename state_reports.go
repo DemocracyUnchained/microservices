@@ -10,12 +10,13 @@
 
 package main 
 
-func main() {
-
-  loadConfig()
-
-  InitDB()
-
-  InitHTTP()
-
+type StateReport struct {
+  State	 	                        `json:"state"`
+  ElectoralVotes	                `json:"electoral_votes"`
+  Population		                `json:"population_recent"`
+  Populations	                    `json:"populations"`     
+  Voter                             `json:"voters"`
+  Vs                                `json:"vs"`
 }
+
+type StateReports []StateReport

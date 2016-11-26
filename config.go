@@ -25,7 +25,7 @@ var Config tomlConfig
 
 func loadConfig() {
 
-    var configPtr = flag.String("config","config.toml","path to configuration file")
+    var configPtr = flag.String("config","/etc/config.toml","path to configuration file")
 
     flag.Parse()
 

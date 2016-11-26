@@ -10,12 +10,11 @@
 
 package main 
 
-func main() {
-
-  loadConfig()
-
-  InitDB()
-
-  InitHTTP()
-
+type Population struct {
+  People  int       `json:"people"`
+  Year    int       `json:"year"`
+  Type    string    `json:"type"`
 }
+
+type Populations []Population
+

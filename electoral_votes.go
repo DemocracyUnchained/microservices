@@ -10,12 +10,9 @@
 
 package main 
 
-func main() {
-
-  loadConfig()
-
-  InitDB()
-
-  InitHTTP()
-
+type ElectoralVote struct {
+  Votes       int   `json:"votes"`
+  CensusYear  int   `json:"census_year"`
 }
+
+type ElectoralVotes []ElectoralVote

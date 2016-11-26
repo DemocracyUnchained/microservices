@@ -1,7 +1,7 @@
 [database]
-username = "readonly"
-password = "cnc93y3ghniwy9384nfihsd93f938nds"
-database = "democracy"
+username = "PUT USERNAME HERE"
+password = "PUT PASSWORD HERE"
+database = "PUT DATABASE NAME HERE"
 
 [server]
 port = 80

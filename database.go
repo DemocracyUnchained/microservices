@@ -10,12 +10,35 @@
 
 package main 
 
-func main() {
+import (
+  "database/sql"
+  _ "github.com/go-sql-driver/mysql"
+)
 
-  loadConfig()
+// Global sql.DB to access the database by all handlers
+var db *sql.DB 
+var err error
 
-  InitDB()
+func InitDB() {
 
-  InitHTTP()
+    // Create an sql.DB and check for errors
+    db, err = sql.Open("mysql", Config.DB.Username+":"+Config.DB.Password+"@/"+Config.DB.Database)
+    if err != nil {
+       panic(err.Error())
+       }			
+
+    // Test the connection to the database
+    err = db.Ping()
+    if err != nil {
+       panic(err.Error())
+    }			
 
 }
+
+func checkErr(err error) {
+     if err != nil {
+      panic(err)
+  }
+}
+
+
