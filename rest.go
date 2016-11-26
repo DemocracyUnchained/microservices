@@ -182,7 +182,7 @@ func VotersShow(w http.ResponseWriter, r *http.Request) {
     voter := Voter{}
     err := rows.Scan(&voter.StateId,&voter.Source,&voter.ElectionId,&voter.BallotsCounted,&voter.VotingEligiblePopulation,&voter.VotingAgePopulation,&voter.IneligiblePrison,&voter.IneligibleProbation,&voter.IneligibleParole)
     checkErr(err)
-    voter.Turnout = float32(voter.VotingEligiblePopulation) / float32(voter.BallotsCounted)
+    voter.Turnout = float32(voter.BallotsCounted) / float32(voter.VotingEligiblePopulation)
     voters = append(voters,voter)
   }
 
@@ -253,6 +253,7 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
       voter := Voter{}
       err := voter_rows.Scan(&voter.StateId,&voter.Source,&voter.ElectionId,&voter.BallotsCounted,&voter.VotingEligiblePopulation,&voter.VotingAgePopulation,&voter.IneligiblePrison,&voter.IneligibleProbation,&voter.IneligibleParole)
       checkErr(err)
+      voter.Turnout = float32(voter.BallotsCounted) / float32(voter.VotingEligiblePopulation)
       state_report.Voter = voter
     }
 
@@ -289,6 +290,7 @@ func StatesShow(w http.ResponseWriter, r *http.Request) {
       err := powerful_rows.Scan(&state_report.Vs.Name,&state_report.Vs.Votes,&state_report.Vs.VotingEligiblePopulation,&state_report.Vs.BallotsCounted)
       checkErr(err)
       state_report.Vs.PercentAsPowerful = (float32(state_report.Vs.VotingEligiblePopulation)/float32(state_report.Vs.Votes)) / (float32(state_report.Voter.VotingEligiblePopulation) / float32(state_report.ElectoralVotes[0].Votes))
+      state_report.Vs.Turnout = float32(state_report.Vs.BallotsCounted) / float32(state_report.Vs.VotingEligiblePopulation)
     }
 
     // Append the state report to the array
