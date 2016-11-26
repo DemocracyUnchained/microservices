@@ -113,6 +113,25 @@ func InitDB() {
 
 }
 
+type MyServer struct {
+    r *mux.Router
+}
+
+func (s *MyServer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+    if origin := req.Header.Get("Origin"); origin != "" {
+        rw.Header().Set("Access-Control-Allow-Origin", origin)
+        rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+        rw.Header().Set("Access-Control-Allow-Headers",
+            "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+    }
+    // Stop here if its Preflighted OPTIONS request
+    if req.Method == "OPTIONS" {
+        return
+    }
+    // Lets Gorilla work
+    s.r.ServeHTTP(rw, req)
+}
+
 func main() {
 
   loadConfig()
@@ -121,7 +140,7 @@ func main() {
 
   router := mux.NewRouter().StrictSlash(true)
 
-  router.HandleFunc("/", Index)
+//  router.HandleFunc("/", Index)
 
   // /states
   router.HandleFunc("/states", StatesIndex)
@@ -134,6 +153,8 @@ func main() {
   // /zipcodes
   router.HandleFunc("/zipcodes", ZipCodeIndex)
   router.HandleFunc("/zipcodes/{zipCode}", ZipCodeShow)
+
+  http.Handle("/", &MyServer{r})
 
   log.Fatal(http.ListenAndServe(":" + strconv.Itoa(Config.Server.Port), router))
 
