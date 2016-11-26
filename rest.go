@@ -79,6 +79,7 @@ type Vs struct {
   VotingEligiblePopulation int    `json:"voting_eligible_population"`
   BallotsCounted int              `json:"ballots_counted"`
   PercentAsPowerful float32       `json:"percent_as_powerful"`
+  Turnout                   float32 `json:"turnout"`
 }
 
 type StateReport struct {
