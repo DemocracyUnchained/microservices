@@ -14,7 +14,7 @@
 			back-end for each state individually.  This should be changed in future to collate
 			data in a single back-end call.
 		-->
-
+		
 		<title>Vote Weight by State</title>
 		<meta name="description" content="map created using amCharts pixel map generator" />
 
@@ -37,6 +37,9 @@
 		<!-- amCharts javascript code -->
 		<script type="text/javascript">
 		var areas = [];
+
+		// TODO: I bet the abbreviations are in the database somewhere.  If we can expose that value 
+		//		 in the JSON returned by our query, we could ditch this lookup table.
 		var state_abbreviations = {
 			'Alabama': 'AL',
 			'Alaska': 'AK',
