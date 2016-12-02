@@ -19,24 +19,25 @@ import (
 )
 
 type State struct {
-	Id			int			`json:"id"`
-	Name  		string		`json:"name"`
-	Joined		string		`json:"joined"`
-	Is_state	bool		`json:"is_state"`
+	Id			      int			`json:"id"`
+	Name  		    string	`json:"name"`
+	Joined		    string	`json:"joined"`
+	Is_state	    bool		`json:"is_state"`
+  Abbreviation  string  `json:"abbreviation"`
 }
 
 type States []State
 
 func StatesIndex(w http.ResponseWriter, r *http.Request) {
 
-     rows, err := db.Query("SELECT id,name,joined,is_state FROM states order by id asc")
+     rows, err := db.Query("SELECT id,name,joined,is_state,abbreviation FROM states order by id asc")
      checkErr(err)
 
       states := States{}
 
       for rows.Next() {
         state := State{}
-	      err := rows.Scan(&state.Id, &state.Name, &state.Joined, &state.Is_state)
+	      err := rows.Scan(&state.Id, &state.Name, &state.Joined, &state.Is_state, &state.Abbreviation)
 	      checkErr(err)
 	      states = append(states, state)
 	      }
