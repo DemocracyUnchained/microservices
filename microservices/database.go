@@ -8,37 +8,42 @@
  * in those projects.
  *************************************************************************************************/
 
-package main 
+package main
 
 import (
   "database/sql"
+  "fmt"
   _ "github.com/go-sql-driver/mysql"
 )
 
 // Global sql.DB to access the database by all handlers
-var db *sql.DB 
+var db *sql.DB
 var err error
 
 func InitDB() {
 
     // Create an sql.DB and check for errors
-    db, err = sql.Open("mysql", Config.DB.Username+":"+Config.DB.Password+"@/"+Config.DB.Database)
+    conn_fmt_str := Config.DB.Username+":%v@tcp("+Config.DB.Host+":%v)/"+Config.DB.Database
+    conn_str := fmt.Sprintf(conn_fmt_str, Config.DB.Password, Config.DB.Port)
+    fmt.Println(fmt.Sprintf(conn_fmt_str, "********", Config.DB.Port))
+    db, err = sql.Open("mysql", conn_str)
+
     if err != nil {
        panic(err.Error())
-       }			
+    }
 
     // Test the connection to the database
     err = db.Ping()
     if err != nil {
        panic(err.Error())
-    }			
+    }
 
 }
 
 func checkErr(err error) {
-     if err != nil {
+    if err != nil {
       panic(err)
-  }
+    }
 }
 
 

@@ -15,6 +15,8 @@ type database struct {
     Username string
     Password string
     Database string
+    Host string
+    Port int
 }
 
 type server struct {

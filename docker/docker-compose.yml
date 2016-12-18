@@ -1,0 +1,23 @@
+version: '2'
+services:
+  web:
+    build: DemocracyUnchained
+    ports:
+     - "8089:8089"
+    volumes:
+     - ../microservices:/go/src/democracy
+    depends_on:
+      - "mysql"
+    command: ["wait-for-it.sh", "mysql:3306", "--", "democracy.sh" ]
+
+  mysql:
+    build: mysql
+    ports:
+     - "3306:3306"
+    volumes:
+     - .dev/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      - MYSQL_DATABASE=du_db
+      - MYSQL_USER=democracy
+      - MYSQL_PASSWORD=unchained
