@@ -8,7 +8,7 @@
  * in those projects.
  *************************************************************************************************/
 
-package main 
+package main
 
 import (
   "net/http"
@@ -39,6 +39,8 @@ func (s *MyServer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 func InitHTTP() {
 
+  fmt.Println("InitHTTP called.")
+
   router := mux.NewRouter().StrictSlash(true)
 
   // /states
@@ -55,8 +57,10 @@ func InitHTTP() {
 
   http.Handle("/", &MyServer{router})
 
-  log.Fatal(http.ListenAndServe(":" + strconv.Itoa(Config.Server.Port), nil))
+  svr_address := "0.0.0.0:" + strconv.Itoa(Config.Server.Port)
+  fmt.Println("InitHTTP complete - calling ListenAndServe with " + svr_address)
 
+  log.Fatal(http.ListenAndServe(svr_address, nil))
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {

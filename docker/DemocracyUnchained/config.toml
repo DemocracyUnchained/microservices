@@ -1,0 +1,9 @@
+[database]
+username = "democracy"
+password = "unchained"
+database = "du_db"
+host = "mysql"
+port = 3306
+
+[server]
+port = 8089

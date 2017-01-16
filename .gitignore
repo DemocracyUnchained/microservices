@@ -1,0 +1,5 @@
+## The MySQL data directory.
+.dev/
+
+## The golang executable.
+democracy
